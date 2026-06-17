@@ -109,6 +109,14 @@
             font-size: 1.8rem;
         }
 
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
         .btn-contact {
             display: inline-block;
             background-color: var(--accent);
@@ -117,12 +125,20 @@
             padding: 14px 30px;
             font-weight: 700;
             border-radius: 8px;
-            margin-top: 20px;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, transform 0.1s;
         }
 
         .btn-contact:hover {
             background-color: #2563EB;
+        }
+
+        .btn-phone {
+            background-color: transparent;
+            border: 2px solid var(--accent);
+        }
+
+        .btn-phone:hover {
+            background-color: rgba(59, 130, 246, 0.1);
         }
 
         footer {
@@ -131,6 +147,16 @@
             color: var(--text-muted);
             font-size: 0.85rem;
             border-top: 1px solid var(--border);
+        }
+
+        footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            color: var(--accent);
         }
     </style>
 </head>
@@ -189,12 +215,15 @@
         <section class="cta-section">
             <h2>Prêt à valider votre posture de sécurité ?</h2>
             <p>Protégez vos relations d'affaires et qualifiez-vous pour les prochains appels d'offres dès aujourd'hui.</p>
-            <a href="mailto:contact@safi-link.ca" class="btn-contact">Planifier un diagnostic initial</a>
+            <div class="cta-buttons">
+                <a href="mailto:contact@safi-link.ca" class="btn-contact">Nous écrire par courriel</a>
+                <a href="tel:6138593343" class="btn-contact btn-phone">Nous appeler : 613-859-3343</a>
+            </div>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 SAFI-LINK. Tous droits réservés. Région d'Ottawa-Gatineau.</p>
+        <p>&copy; 2026 SAFI-LINK. Tous droits réservés. Région d'Ottawa-Gatineau. | Tél : <a href="tel:6138593343">613-859-3343</a></p>
     </footer>
 
 </body>
