@@ -1,445 +1,216 @@
-from pathlib import Path
-
-html = r'''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="SAFI-LINK Déménagement : services de déménagement résidentiel, commercial et transport de meubles à Ottawa-Gatineau. Demandez votre soumission.">
-  <meta name="theme-color" content="#123a70">
-  <title>SAFI-LINK Déménagement | Votre déménagement en toute confiance</title>
-  <style>
-    :root {
-      --navy: #123a70;
-      --blue: #2563eb;
-      --sky: #60a5fa;
-      --pale: #eff6ff;
-      --ink: #172033;
-      --muted: #5b6475;
-      --white: #fff;
-      --line: #dce5f1;
-      --shadow: 0 18px 45px rgba(18, 58, 112, .12);
-      --radius: 20px;
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      color: var(--ink);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.6;
-      background: #fff;
-    }
-    a { color: inherit; text-decoration: none; }
-    img { max-width: 100%; display: block; }
-    .container { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
-    .topbar { background: var(--navy); color: #eaf2ff; font-size: .9rem; }
-    .topbar-inner { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; flex-wrap: wrap; }
-    .topbar a { color: #fff; font-weight: 700; }
-    header { background: #fff; position: sticky; top: 0; z-index: 20; box-shadow: 0 4px 20px rgba(10, 30, 60, .06); }
-    .nav { min-height: 82px; display: flex; align-items: center; justify-content: space-between; gap: 22px; }
-    .brand { display: inline-flex; align-items: center; gap: 12px; font-weight: 900; letter-spacing: -.04em; font-size: 1.35rem; color: var(--navy); }
-    .brand-mark { width: 44px; height: 44px; display: grid; place-items: center; color: white; background: linear-gradient(135deg, var(--navy), var(--blue)); border-radius: 13px; box-shadow: 0 8px 18px rgba(37, 99, 235, 0.21); }
-    .brand-mark svg { width: 27px; height: 27px; }
-    .brand small { display: block; font-size: .63rem; letter-spacing: .15em; color: var(--muted); margin-top: -3px; }
-    .nav-links { display: flex; align-items: center; gap: 26px; font-weight: 700; color: #344056; font-size: .95rem; }
-    .nav-links a:hover { color: var(--blue); }
-    .btn { display: inline-flex; justify-content: center; align-items: center; gap: 9px; border: 0; cursor: pointer; border-radius: 999px; padding: 13px 21px; font-weight: 800; font-size: .95rem; transition: transform .2s, box-shadow .2s, background .2s; }
-    .btn:hover { transform: translateY(-2px); }
-    .btn-primary { background: var(--blue); color: white; box-shadow: 0 10px 22px rgba(37, 99, 235, 0.21); }
-    .btn-primary:hover { background: #1d4ed8; }
-    .btn-light { background: white; color: var(--navy); }
-    .btn-outline { border: 1px solid #cbd8ec; color: var(--navy); background: white; }
-    .hero { position: relative; overflow: hidden; background: linear-gradient(115deg, #0b2852 0%, #123a70 52%, #1d5bb6 100%); color: white; }
-    .hero::before { content: ""; position: absolute; width: 480px; height: 480px; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 50%; right: -110px; top: -190px; box-shadow: 0 0 0 55px rgba(255, 255, 255, 0.03), 0 0 0 110px rgba(255, 255, 255, 0.02); }
-    .hero-grid { position: relative; display: grid; grid-template-columns: 1.03fr .97fr; gap: 44px; align-items: center; padding-top: 78px; padding-bottom: 78px; }
-    .eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.09); border: 1px solid rgba(255, 255, 255, 0.18); padding: 7px 12px; border-radius: 999px; font-size: .83rem; font-weight: 800; color: #dbeafe; }
-    h1 { font-size: clamp(2.5rem, 5vw, 4.45rem); line-height: 1.06; letter-spacing: -.055em; margin: 20px 0; }
-    h1 span { color: #93c5fd; }
-    .hero p { color: #dce9fb; font-size: 1.1rem; max-width: 580px; margin: 0 0 27px; }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-    .hero-note { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 26px; color: #e2edff; font-size: .9rem; }
-    .hero-note span::before { content: "✓"; color: #93c5fd; font-weight: 900; margin-right: 7px; }
-    .hero-visual { position: relative; }
-    .hero-visual img { width: 100%; height: 430px; object-fit: cover; border-radius: 28px; border: 1px solid rgba(255, 255, 255, 0.23); box-shadow: 0 28px 70px rgba(6, 26, 59, 0.4); }
-    .floating-card { position: absolute; left: -22px; bottom: 25px; display: flex; align-items: center; gap: 12px; padding: 16px 19px; border-radius: 16px; color: var(--ink); background: white; box-shadow: var(--shadow); }
-    .floating-icon { width: 45px; height: 45px; border-radius: 12px; background: var(--pale); display: grid; place-items: center; color: var(--blue); font-size: 1.4rem; }
-    .floating-card strong { display: block; line-height: 1.3; }
-    .floating-card small { color: var(--muted); }
-    .trust-strip { background: #f8fbff; border-bottom: 1px solid #e8eef7; }
-    .trust-inner { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 23px 0; }
-    .trust-item { display: flex; justify-content: center; align-items: center; gap: 12px; color: #2b3b55; font-weight: 800; }
-    .trust-item span { color: var(--blue); font-size: 1.35rem; }
-    section { scroll-margin-top: 95px; }
-    .section { padding: 84px 0; }
-    .section-soft { background: #f7faff; }
-    .section-heading { text-align: center; max-width: 720px; margin: 0 auto 42px; }
-    .kicker { color: var(--blue); text-transform: uppercase; letter-spacing: .16em; font-size: .78rem; font-weight: 900; }
-    h2 { font-size: clamp(2rem, 3.4vw, 3rem); line-height: 1.15; letter-spacing: -.04em; margin: 10px 0 14px; color: #142746; }
-    .section-heading p { margin: 0; color: var(--muted); font-size: 1.05rem; }
-    .services { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-    .service-card { background: white; border: 1px solid #e4ebf5; border-radius: var(--radius); padding: 28px; box-shadow: 0 8px 28px rgba(24, 59, 108, 0.03); transition: transform .2s, box-shadow .2s; }
-    .service-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
-    .service-icon { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 17px; background: #eaf2ff; color: var(--blue); font-size: 1.7rem; margin-bottom: 20px; }
-    .service-card h3 { margin: 0 0 9px; font-size: 1.22rem; color: #152b4c; }
-    .service-card p { margin: 0; color: var(--muted); }
-    .service-card a { display: inline-block; margin-top: 18px; color: var(--blue); font-weight: 800; }
-    .why-grid { display: grid; grid-template-columns: .95fr 1.05fr; gap: 55px; align-items: center; }
-    .why-image { position: relative; }
-    .why-image img { width: 100%; height: 480px; object-fit: cover; border-radius: 25px; }
-    .image-tag { position: absolute; left: 18px; bottom: 18px; padding: 14px 17px; background: white; color: var(--navy); border-radius: 13px; font-weight: 900; box-shadow: var(--shadow); }
-    .why-copy p { color: var(--muted); }
-    .benefits { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 26px 0 30px; }
-    .benefit { display: flex; gap: 12px; align-items: flex-start; }
-    .check { flex: 0 0 28px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: #dcfce7; color: #15803d; font-weight: 900; }
-    .benefit strong { display: block; margin-bottom: 3px; }
-    .benefit small { color: var(--muted); }
-    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; counter-reset: step; }
-    .step { padding: 27px; border: 1px solid var(--line); border-radius: 18px; background: white; }
-    .step-number { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; background: var(--navy); color: white; font-weight: 900; margin-bottom: 17px; }
-    .step h3 { margin: 0 0 7px; }
-    .step p { margin: 0; color: var(--muted); }
-    .quote-section { background: linear-gradient(135deg, #102f5d, #1e56a5); color: white; }
-    .quote-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 55px; align-items: start; }
-    .quote-copy h2 { color: white; }
-    .quote-copy p { color: #d8e7ff; }
-    .quote-points { padding: 0; list-style: none; margin: 25px 0 0; }
-    .quote-points li { margin: 10px 0; color: #e4efff; }
-    .quote-points li::before { content: "✓"; margin-right: 10px; color: #93c5fd; font-weight: 900; }
-    .quote-form { background: white; color: var(--ink); border-radius: 23px; padding: 30px; box-shadow: 0 25px 65px rgba(7, 27, 59, 0.3); }
-    .quote-form h3 { margin: 0 0 5px; font-size: 1.5rem; }
-    .form-intro { margin: 0 0 22px; color: var(--muted); font-size: .94rem; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-    .field { display: flex; flex-direction: column; gap: 6px; }
-    .field.full { grid-column: 1 / -1; }
-    label { font-weight: 800; font-size: .88rem; color: #28364b; }
-    input, select, textarea { width: 100%; border: 1px solid #d5deea; border-radius: 10px; padding: 12px 13px; font: inherit; color: var(--ink); background: #fff; outline: none; }
-    input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-    textarea { resize: vertical; min-height: 95px; }
-    .form-submit { width: 100%; margin-top: 18px; }
-    .form-disclaimer { color: #737e90; font-size: .78rem; margin: 12px 0 0; }
-    .contact-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-    .contact-card { padding: 24px; text-align: center; border: 1px solid var(--line); border-radius: 17px; }
-    .contact-card .service-icon { margin: 0 auto 14px; }
-    .contact-card h3 { margin: 0 0 5px; }
-    .contact-card p { margin: 0; color: var(--muted); }
-    .contact-card a { display: inline-block; color: var(--blue); font-weight: 800; margin-top: 8px; overflow-wrap: anywhere; }
-    footer { background: #0b1e39; color: #d5e1f3; padding: 35px 0; }
-    .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
-    footer .brand { color: white; }
-    footer .brand small { color: #aabbd3; }
-    footer p { margin: 7px 0 0; color: #aabbd3; font-size: .88rem; }
-    .footer-links { display: flex; gap: 18px; flex-wrap: wrap; font-weight: 700; font-size: .9rem; }
-    .footer-links a:hover { color: white; }
-    .mobile-cta { display: none; }
-    @media (max-width: 900px) {
-      .nav-links { gap: 14px; }
-      .nav-links a:not(.btn) { display: none; }
-      .hero-grid { grid-template-columns: 1fr; padding-top: 55px; padding-bottom: 65px; }
-      .hero-visual { max-width: 650px; }
-      .hero-visual img { height: 360px; }
-      .services { grid-template-columns: repeat(2, 1fr); }
-      .why-grid, .quote-grid { grid-template-columns: 1fr; gap: 35px; }
-      .why-image img { height: 370px; }
-    }
-    @media (max-width: 620px) {
-      .container { width: min(100% - 28px, 1120px); }
-      .topbar-inner { justify-content: center; font-size: .8rem; }
-      .nav { min-height: 72px; }
-      .brand { font-size: 1.12rem; }
-      .brand-mark { width: 39px; height: 39px; }
-      .nav-links .btn { padding: 10px 13px; font-size: .82rem; }
-      .hero-grid { gap: 30px; padding-top: 43px; padding-bottom: 48px; }
-      h1 { font-size: clamp(2.45rem, 12vw, 3.6rem); }
-      .hero p { font-size: 1rem; }
-      .hero-actions .btn { width: 100%; }
-      .hero-visual img { height: 275px; border-radius: 20px; }
-      .floating-card { left: 10px; bottom: 12px; padding: 11px 13px; }
-      .trust-inner { grid-template-columns: 1fr; gap: 12px; padding: 20px 0; }
-      .trust-item { justify-content: flex-start; }
-      .section { padding: 60px 0; }
-      .services, .steps, .contact-row { grid-template-columns: 1fr; }
-      .service-card { padding: 23px; }
-      .benefits { grid-template-columns: 1fr; }
-      .quote-form { padding: 22px 17px; }
-      .form-grid { grid-template-columns: 1fr; }
-      .field.full { grid-column: auto; }
-      .footer-inner { align-items: flex-start; flex-direction: column; }
-      .mobile-cta { display: flex; position: fixed; z-index: 30; bottom: 10px; left: 10px; right: 10px; gap: 8px; padding: 8px; border-radius: 16px; background: #fff; box-shadow: 0 5px 30px rgba(11, 30, 57, 0.25); }
-      .mobile-cta .btn { flex: 1; padding: 11px 8px; font-size: .85rem; }
-      body { padding-bottom: 78px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="SAFI-LINK Déménagement : déménagement résidentiel, commercial et transport de meubles à Ottawa-Gatineau. Estimez votre prix en ligne, sans appel.">
+<meta name="theme-color" content="#123a70">
+<title>SAFI-LINK Déménagement | Estimation en ligne à Ottawa-Gatineau</title>
+<style>
+:root{--navy:#123a70;--blue:#2563eb;--pale:#eff6ff;--ink:#172033;--muted:#5b6475;--line:#dce5f1;--r:18px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+a{color:inherit;text-decoration:none}.c{width:min(1080px,calc(100% - 32px));margin:0 auto}
+header{position:sticky;top:0;z-index:20;background:#fff;box-shadow:0 3px 16px rgba(10,30,60,.08)}
+.nav{display:flex;align-items:center;justify-content:space-between;min-height:68px;gap:14px}
+.brand{font-weight:900;font-size:1.25rem;color:var(--navy);letter-spacing:-.03em}.brand small{display:block;font-size:.6rem;letter-spacing:.15em;color:var(--muted);margin-top:-4px}
+.nl{display:flex;align-items:center;gap:20px;font-weight:700;font-size:.93rem}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;border:0;cursor:pointer;border-radius:999px;padding:12px 20px;font:inherit;font-weight:800;font-size:.95rem}
+.bp{background:var(--blue);color:#fff}.bl{background:#fff;color:var(--navy)}.bg{background:#16a34a;color:#fff}
+.bo{border:1px solid rgba(255,255,255,.45);color:#fff}
+.hero{background:linear-gradient(115deg,#0b2852,#123a70 55%,#1d5bb6);color:#fff;padding:64px 0}
+h1{font-size:clamp(2.1rem,6vw,3.8rem);line-height:1.08;letter-spacing:-.05em;margin:0 0 16px}h1 span{color:#93c5fd}
+.hero p{color:#dce9fb;font-size:1.08rem;max-width:620px}.acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.tick{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:20px;font-size:.9rem;color:#e2edff}.tick span:before{content:"✓ ";color:#93c5fd;font-weight:900}
+.s{padding:64px 0}.soft{background:#f7faff}
+.sh{text-align:center;max-width:680px;margin:0 auto 32px}.k{color:var(--blue);text-transform:uppercase;letter-spacing:.15em;font-size:.76rem;font-weight:900}
+h2{font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.15;letter-spacing:-.04em;margin:8px 0 10px;color:#142746}.sh p{color:var(--muted);margin:0}
+section{scroll-margin-top:80px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.card .i{font-size:1.8rem}.card h3{margin:8px 0 6px}.card p{margin:0;color:var(--muted);font-size:.95rem}
+.card ul{margin:10px 0 0;padding-left:18px;color:var(--muted);font-size:.9rem}
+.est{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:start}
+.panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px;box-shadow:0 14px 40px rgba(18,58,112,.1)}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:14px}.f{display:flex;flex-direction:column;gap:5px}.f.full{grid-column:1/-1}
+label{font-weight:800;font-size:.86rem}input,select,textarea{width:100%;border:1px solid #d5deea;border-radius:10px;padding:12px;font:inherit;background:#fff}
+input:focus,select:focus,textarea:focus{outline:2px solid #bfdbfe;border-color:var(--blue)}textarea{min-height:86px}
+.chk{flex-direction:row;align-items:center;gap:10px;font-weight:600}.chk input{width:auto}
+.res{background:linear-gradient(135deg,#102f5d,#1e56a5);color:#fff;border-radius:22px;padding:26px;position:sticky;top:84px}
+.res .p{font-size:2.1rem;font-weight:900;letter-spacing:-.04em;margin:6px 0}.res small{color:#cfe0fa;display:block}
+.res ul{padding-left:18px;color:#e4efff;font-size:.9rem}.res .btn{width:100%;margin-top:10px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.st b{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--navy);color:#fff;margin-bottom:10px}
+.st h3{margin:0 0 4px;font-size:1.05rem}.st p{margin:0;color:var(--muted);font-size:.92rem}
+details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:800}details p{margin:10px 0 0;color:var(--muted)}
+.ok{margin-top:12px;font-weight:700;color:#15803d;font-size:.92rem}
+.note{color:#737e90;font-size:.8rem;margin:10px 0 0}
+footer{background:#0b1e39;color:#d5e1f3;padding:30px 0;font-size:.9rem}
+.fi{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}footer a{font-weight:700;margin-right:14px}
+.lg{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:999px;padding:7px 13px;font:inherit;font-weight:800;cursor:pointer}
+.mob{display:none}
+@media(max-width:860px){.g3,.steps{grid-template-columns:1fr 1fr}.est{grid-template-columns:1fr}.res{position:static}.nl a:not(.btn){display:none}}
+@media(max-width:600px){.g3,.steps,.fg{grid-template-columns:1fr}.hero{padding:44px 0}.s{padding:48px 0}.acts .btn{width:100%}
+.mob{display:flex;position:fixed;z-index:30;left:10px;right:10px;bottom:10px;gap:8px;padding:8px;background:#fff;border-radius:16px;box-shadow:0 5px 28px rgba(11,30,57,.3)}.mob .btn{flex:1;padding:11px 6px;font-size:.85rem}body{padding-bottom:78px}}
+</style>
 </head>
 <body>
-  <div class="topbar">
-    <div class="container topbar-inner">
-      <span>🚚 Déménagement résidentiel et commercial</span>
-      <span>Appelez-nous : <a href="tel:+16138593343">613-859-3343</a></span>
-    </div>
-  </div>
+<header><div class="c nav">
+<a class="brand" href="#accueil">SAFI-LINK<small>DÉMÉNAGEMENT</small></a>
+<nav class="nl"><a href="#services">Services</a><a href="#estimation">Estimation</a><a href="#faq">Questions</a><button class="lg" id="lg" type="button">EN</button><a class="btn bp" href="#estimation">Estimer mon prix</a></nav>
+</div></header>
 
-  <header>
-    <div class="container nav">
-      <a class="brand" href="#accueil" aria-label="SAFI-LINK Déménagement, accueil">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none"><path d="M3 10h16v13H3zM19 14h5l5 6v3H19z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><circle cx="9" cy="24" r="3" fill="currentColor"/><circle cx="24" cy="24" r="3" fill="currentColor"/><path d="M22 14v6h7" stroke="currentColor" stroke-width="2.4"/></svg>
-        </span>
-        <span>SAFI-LINK<small>DÉMÉNAGEMENT</small></span>
-      </a>
-      <nav class="nav-links" aria-label="Navigation principale">
-        <a href="#services">Services</a>
-        <a href="#apropos">Pourquoi nous</a>
-        <a href="#contact">Contact</a>
-        <a class="btn btn-primary" href="#soumission">Soumission gratuite</a>
-      </nav>
-    </div>
-  </header>
+<main>
+<section class="hero" id="accueil"><div class="c">
+<h1>Votre déménagement, <span>sans attendre un rappel.</span></h1>
+<p>Estimez votre prix en 1 minute, trouvez toutes les réponses en ligne et envoyez votre demande quand ça vous convient. Nous travaillons sur le terrain : nous vous répondons par texto ou courriel dès que possible.</p>
+<div class="acts"><a class="btn bl" href="#estimation">Estimer mon déménagement →</a><a class="btn bo" href="#faq">Voir les questions fréquentes</a></div>
+<div class="tick"><span>Prix estimé instantanément</span><span>Résidentiel et commercial</span><span>Ottawa-Gatineau</span></div>
+</div></section>
 
-  <main>
-    <section class="hero" id="accueil">
-      <div class="container hero-grid">
-        <div>
-          <span class="eyebrow">✦ Un déménagement sans tracas</span>
-          <h1>On s’occupe du déménagement. <span>Vous profitez du nouveau départ.</span></h1>
-          <p>Que vous changiez de logement ou déplaciez votre entreprise, SAFI-LINK vous accompagne avec un service attentionné, une bonne organisation et le souci de protéger vos biens.</p>
-          <div class="hero-actions">
-            <a class="btn btn-light" href="#soumission">Obtenir une soumission <span aria-hidden="true">→</span></a>
-            <a class="btn" style="border:1px solid rgba(255, 255, 255, 0.44);color:#fff;background:rgba(255, 255, 255, 0.06)" href="tel:+16138593343">☎ 613-859-3343</a>
-          </div>
-          <div class="hero-note">
-            <span>Service personnalisé</span>
-            <span>Biens traités avec soin</span>
-          </div>
-        </div>
-        <div class="hero-visual">
-          <img src="https://images.unsplash.com/photo-1600518464441-9306b3e7b5a8?auto=format&fit=crop&w=1200&q=85" alt="Boîtes de déménagement soigneusement préparées dans une maison" fetchpriority="high">
-          <div class="floating-card">
-            <div class="floating-icon">📦</div>
-            <div><strong>Un nouveau départ</strong><small>On vous aide à chaque étape</small></div>
-          </div>
-        </div>
-      </div>
-    </section>
+<section class="s" id="services"><div class="c">
+<div class="sh"><span class="k">Services</span><h2>Ce que nous faisons</h2><p>Tout est détaillé ici pour que vous sachiez à quoi vous attendre.</p></div>
+<div class="g3">
+<div class="card"><div class="i">🏠</div><h3>Résidentiel</h3><p>Appartement, condo ou maison.</p><ul><li>Chargement, transport, déchargement</li><li>Protection des meubles</li></ul></div>
+<div class="card"><div class="i">🏢</div><h3>Commercial</h3><p>Bureaux, mobilier et équipement.</p><ul><li>Planification selon vos heures d’ouverture</li><li>Déménagement par étapes possible</li></ul></div>
+<div class="card"><div class="i">🛋️</div><h3>Transport de meubles</h3><p>Un meuble ou quelques objets volumineux.</p><ul><li>Achat en ligne, Kijiji, Marketplace</li><li>Ramassage et livraison</li></ul></div>
+<div class="card"><div class="i">📦</div><h3>Emballage</h3><p>Protection des articles fragiles.</p><ul><li>Option ajoutée à votre estimation</li></ul></div>
+<div class="card"><div class="i">🧰</div><h3>Aide au chargement</h3><p>Vous avez déjà un camion ? Nous fournissons les bras.</p><ul><li>Chargement et/ou déchargement</li></ul></div>
+<div class="card"><div class="i">🛣️</div><h3>Longue distance</h3><p>Vers une autre ville.</p><ul><li>Soumission personnalisée selon le trajet</li></ul></div>
+</div></div></section>
 
-    <div class="trust-strip">
-      <div class="container trust-inner">
-        <div class="trust-item"><span>✓</span> Service attentionné</div>
-        <div class="trust-item"><span>⌂</span> Résidentiel et commercial</div>
-        <div class="trust-item"><span>↗</span> Soumission simple et rapide</div>
-      </div>
-    </div>
+<section class="s soft" id="estimation"><div class="c">
+<div class="sh"><span class="k">Estimation en ligne</span><h2>Votre prix approximatif en 1 minute</h2><p>Répondez aux questions : le prix se calcule en direct. Puis envoyez votre demande en un clic.</p></div>
+<div class="est">
+<div class="panel"><form id="f" autocomplete="on"><div class="fg">
+<div class="f"><label for="type">Type de déménagement</label><select id="type"><option value="res">Résidentiel</option><option value="com">Commercial</option><option value="meuble">Transport de meubles seulement</option></select></div>
+<div class="f"><label for="size">Taille</label><select id="size"></select></div>
+<div class="f"><label for="dist">Distance</label><select id="dist"><option value="0">Même ville / moins de 15 km</option><option value="1">Ottawa ⇄ Gatineau ou 15-50 km</option><option value="2">Plus de 50 km (soumission sur mesure)</option></select></div>
+<div class="f"><label for="acc">Accès</label><select id="acc"><option value="0">Rez-de-chaussée / ascenseur</option><option value="1">Escaliers (1-2 étages)</option><option value="2">Escaliers (3 étages et plus)</option></select></div>
+<div class="f full chk"><input type="checkbox" id="pack"><label for="pack" style="font-weight:600">Ajouter l’emballage et la protection</label></div>
+<div class="f full chk"><input type="checkbox" id="heavy"><label for="heavy" style="font-weight:600">J’ai des objets très lourds (piano, coffre-fort, etc.)</label></div>
+<div class="f"><label for="date">Date souhaitée</label><input type="date" id="date"></div>
+<div class="f"><label for="name">Nom complet *</label><input id="name" required autocomplete="name"></div>
+<div class="f"><label for="phone">Téléphone (texto) *</label><input id="phone" type="tel" required autocomplete="tel"></div>
+<div class="f"><label for="email">Courriel *</label><input id="email" type="email" required autocomplete="email"></div>
+<div class="f full"><label for="from">Adresse de départ *</label><input id="from" required></div>
+<div class="f full"><label for="to">Adresse d’arrivée *</label><input id="to" required></div>
+<div class="f full"><label for="det">Précisions (facultatif)</label><textarea id="det" placeholder="Étages, objets fragiles, stationnement, horaires…"></textarea></div>
+</div><p class="note">* Obligatoire. Cliquez sur « Envoyer ma demande » : elle nous parvient directement avec votre estimation.</p></form></div>
 
-    <section class="section" id="services">
-      <div class="container">
-        <div class="section-heading">
-          <span class="kicker">Nos services</span>
-          <h2>Tout pour un déménagement plus simple</h2>
-          <p>Choisissez le service adapté à votre situation. Nous pouvons discuter de vos besoins et préparer une soumission personnalisée.</p>
-        </div>
-        <div class="services">
-          <article class="service-card">
-            <div class="service-icon" aria-hidden="true">🏠</div>
-            <h3>Déménagement résidentiel</h3>
-            <p>Pour un appartement, un condo ou une maison : planifiez votre déménagement avec une équipe attentive à vos meubles et à vos effets personnels.</p>
-            <a href="#soumission">Demander une soumission →</a>
-          </article>
-          <article class="service-card">
-            <div class="service-icon" aria-hidden="true">🏢</div>
-            <h3>Déménagement commercial</h3>
-            <p>Déplacement de bureaux, de mobilier et de matériel professionnel, avec une organisation pensée pour faciliter la transition de votre entreprise.</p>
-            <a href="#soumission">Parler de mon projet →</a>
-          </article>
-          <article class="service-card">
-            <div class="service-icon" aria-hidden="true">🛋️</div>
-            <h3>Transport de meubles</h3>
-            <p>Besoin de déplacer un meuble ou quelques objets volumineux ? Décrivez-nous ce qu’il faut transporter et les lieux concernés.</p>
-            <a href="#soumission">Décrire le transport →</a>
-          </article>
-          <article class="service-card">
-            <div class="service-icon" aria-hidden="true">📦</div>
-            <h3>Emballage et protection</h3>
-            <p>Préparez vos biens pour le transport grâce à une organisation adaptée et à des précautions pour protéger les articles fragiles.</p>
-            <a href="#soumission">Discuter des options →</a>
-          </article>
-          <article class="service-card">
-            <div class="service-icon" aria-hidden="true">🧰</div>
-            <h3>Aide au chargement</h3>
-            <p>Vous avez déjà un véhicule ? Demandez si une aide au chargement ou au déchargement peut être organisée pour votre déménagement.</p>
-            <a href="#soumission">Vérifier la disponibilité →</a>
-          </article>
-          <article class="service-card">
-            <div class="service-icon" aria-hidden="true">🛣️</div>
-            <h3>Longue distance</h3>
-            <p>Vous partez dans une autre ville ? Indiquez les adresses, la date et le volume estimé afin que nous puissions évaluer votre demande.</p>
-            <a href="#soumission">Planifier mon trajet →</a>
-          </article>
-        </div>
-      </div>
-    </section>
+<aside class="res"><small>Estimation indicative</small><div class="p" id="price">—</div><small id="hrs"></small>
+<ul><li>Prix final confirmé par écrit après validation</li><li>Les taxes applicables peuvent s’ajouter</li></ul>
+<button class="btn bl" id="bf" type="button">✅ Envoyer ma demande</button>
+<small style="margin-top:12px">Autres façons d’envoyer :</small>
+<button class="btn bo" id="bm" type="button">✉ Par courriel</button>
+<a class="btn bo" id="bs" href="#">📱 Envoyer par texto</a>
+<div class="ok" id="ok" role="status" aria-live="polite"></div></aside>
+</div></div></section>
 
-    <section class="section section-soft" id="apropos">
-      <div class="container why-grid">
-        <div class="why-image">
-          <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1100&q=85" alt="Intérieur lumineux d'une maison prête à accueillir ses occupants" loading="lazy">
-          <div class="image-tag">Votre tranquillité, notre priorité</div>
-        </div>
-        <div class="why-copy">
-          <span class="kicker">Pourquoi SAFI-LINK ?</span>
-          <h2>Un service humain, du premier appel à l’arrivée</h2>
-          <p>Un déménagement demande du temps et de la préparation. Notre objectif est de rendre chaque étape plus claire : comprendre vos besoins, organiser le transport et prendre soin de vos biens.</p>
-          <div class="benefits">
-            <div class="benefit"><span class="check">✓</span><div><strong>Écoute et conseils</strong><small>Une solution adaptée à votre situation.</small></div></div>
-            <div class="benefit"><span class="check">✓</span><div><strong>Planification claire</strong><small>Les détails sont discutés à l’avance.</small></div></div>
-            <div class="benefit"><span class="check">✓</span><div><strong>Attention aux biens</strong><small>Une manipulation soigneuse de vos effets.</small></div></div>
-            <div class="benefit"><span class="check">✓</span><div><strong>Soumission personnalisée</strong><small>Selon le trajet et le travail à effectuer.</small></div></div>
-          </div>
-          <a class="btn btn-primary" href="#soumission">Parlons de votre déménagement</a>
-        </div>
-      </div>
-    </section>
+<section class="s"><div class="c">
+<div class="sh"><span class="k">Comment ça marche</span><h2>4 étapes, zéro appel obligatoire</h2></div>
+<div class="steps">
+<div class="st"><b>1</b><h3>Estimez</h3><p>Remplissez le formulaire, le prix s’affiche.</p></div>
+<div class="st"><b>2</b><h3>Envoyez</h3><p>Un clic, et votre demande nous arrive.</p></div>
+<div class="st"><b>3</b><h3>Confirmation</h3><p>Nous validons les détails et la date par écrit.</p></div>
+<div class="st"><b>4</b><h3>Jour J</h3><p>L’équipe arrive et s’occupe de tout.</p></div>
+</div></div></section>
 
-    <section class="section">
-      <div class="container">
-        <div class="section-heading">
-          <span class="kicker">Comment ça marche</span>
-          <h2>Trois étapes, tout simplement</h2>
-          <p>Envoyez-nous les informations essentielles et nous pourrons discuter de la meilleure façon de vous aider.</p>
-        </div>
-        <div class="steps">
-          <article class="step"><div class="step-number">01</div><h3>Décrivez vos besoins</h3><p>Précisez les lieux, la date souhaitée et le type de déménagement.</p></article>
-          <article class="step"><div class="step-number">02</div><h3>Recevez une estimation</h3><p>Nous échangeons avec vous pour clarifier les détails et préparer une soumission.</p></article>
-          <article class="step"><div class="step-number">03</div><h3>Préparez votre départ</h3><p>Confirmez les modalités convenues et préparez-vous pour votre nouveau départ.</p></article>
-        </div>
-      </div>
-    </section>
+<section class="s soft" id="faq"><div class="c" style="max-width:780px">
+<div class="sh"><span class="k">Questions fréquentes</span><h2>Toutes les réponses, sans appeler</h2></div>
+<details><summary>Comment obtenir un prix ?</summary><p>Utilisez l’estimateur ci-dessus. Vous obtenez une fourchette immédiate, puis nous confirmons le prix final par écrit.</p></details>
+<details><summary>Quand aurai-je une réponse ?</summary><p>Nous sommes souvent sur le terrain. Nous répondons par texto ou courriel dès que possible. Pour une date précise, envoyez votre demande le plus tôt possible.</p></details>
+<details><summary>Comment le prix est-il calculé ?</summary><p>Selon la taille du logement, la distance, l’accès (escaliers), les objets lourds et les options choisies comme l’emballage.</p></details>
+<details><summary>Que faut-il préparer avant le jour J ?</summary><p>Videz et débranchez les électroménagers, emballez les petits objets, réservez le stationnement ou l’ascenseur si nécessaire et libérez les passages.</p></details>
+<details><summary>Dois-je être présent ?</summary><p>Oui, une personne doit être présente au départ et à l’arrivée pour guider l’équipe et valider la fin du travail.</p></details>
+<details><summary>Quelles zones desservez-vous ?</summary><p>Ottawa-Gatineau et environs. Pour une destination plus éloignée, choisissez « Plus de 50 km » : nous préparerons une soumission sur mesure.</p></details>
+<details><summary>Puis-je modifier ou annuler ma réservation ?</summary><p>Oui. Écrivez-nous par texto ou courriel le plus tôt possible pour ajuster la date ou les détails.</p></details>
+</div></section>
+</main>
 
-    <section class="section quote-section" id="soumission">
-      <div class="container quote-grid">
-        <div class="quote-copy">
-          <span class="kicker" style="color:#bfdbfe">Demande de soumission</span>
-          <h2>Parlons de votre prochain déménagement.</h2>
-          <p>Remplissez les champs ci-contre. Votre application de courriel s’ouvrira avec les renseignements fournis, prêts à être envoyés à notre équipe.</p>
-          <ul class="quote-points">
-            <li>Indiquez votre date souhaitée</li>
-            <li>Précisez les lieux de départ et d’arrivée</li>
-            <li>Ajoutez toute information utile à votre projet</li>
-          </ul>
-          <p><strong>Vous préférez appeler ?</strong><br><a href="tel:+16138593343" style="color:white;font-weight:900">613-859-3343</a></p>
-        </div>
-        <form class="quote-form" id="quoteForm">
-          <h3>Obtenir une soumission</h3>
-          <p class="form-intro">Les champs marqués d’un astérisque sont obligatoires.</p>
-          <div class="form-grid">
-            <div class="field">
-              <label for="name">Nom complet *</label>
-              <input id="name" name="name" autocomplete="name" required placeholder="Votre nom">
-            </div>
-            <div class="field">
-              <label for="phone">Téléphone *</label>
-              <input id="phone" name="phone" type="tel" autocomplete="tel" required placeholder="Votre numéro">
-            </div>
-            <div class="field full">
-              <label for="email">Adresse courriel *</label>
-              <input id="email" name="email" type="email" autocomplete="email" required placeholder="vous@exemple.ca">
-            </div>
-            <div class="field">
-              <label for="type">Type de service *</label>
-              <select id="type" name="type" required>
-                <option value="">Sélectionnez</option>
-                <option>Déménagement résidentiel</option>
-                <option>Déménagement commercial</option>
-                <option>Transport de meubles</option>
-                <option>Emballage / protection</option>
-                <option>Aide au chargement</option>
-                <option>Longue distance</option>
-                <option>Autre demande</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="date">Date souhaitée</label>
-              <input id="date" name="date" type="date">
-            </div>
-            <div class="field full">
-              <label for="from">Adresse ou ville de départ *</label>
-              <input id="from" name="from" required placeholder="Ville ou adresse de départ">
-            </div>
-            <div class="field full">
-              <label for="to">Adresse ou ville d’arrivée *</label>
-              <input id="to" name="to" required placeholder="Ville ou adresse d’arrivée">
-            </div>
-            <div class="field full">
-              <label for="details">Détails supplémentaires</label>
-              <textarea id="details" name="details" placeholder="Type de logement, étages, volume, objets particuliers…"></textarea>
-            </div>
-          </div>
-          <button class="btn btn-primary form-submit" type="submit">Préparer ma demande par courriel →</button>
-          <p class="form-disclaimer">Ce formulaire prépare un courriel sur votre appareil. Il ne transmet pas automatiquement les données à un serveur.</p>
-          <p id="formStatus" role="status" aria-live="polite" style="margin:10px 0 0;font-size:.9rem;color:#15803d;font-weight:700;"></p>
-        </form>
-      </div>
-    </section>
+<footer><div class="c fi">
+<div><strong>SAFI-LINK Déménagement</strong><br>© <span id="y">2026</span> Tous droits réservés. Zone : Ottawa-Gatineau</div>
+<div><a href="mailto:contact@safi-link.ca">contact@safi-link.ca</a><a href="sms:+16138593343">Texto 613-859-3343</a></div>
+</div></footer>
 
-    <section class="section" id="contact">
-      <div class="container">
-        <div class="section-heading">
-          <span class="kicker">Contact</span>
-          <h2>Nous sommes là pour vous aider</h2>
-          <p>Contactez-nous pour discuter de votre déménagement et des disponibilités.</p>
-        </div>
-        <div class="contact-row">
-          <div class="contact-card"><div class="service-icon">☎</div><h3>Téléphone</h3><p>Appelez-nous directement</p><a href="tel:+16138593343">613-859-3343</a></div>
-          <div class="contact-card"><div class="service-icon">✉</div><h3>Courriel</h3><p>Envoyez les détails de votre projet</p><a href="mailto:contact@safi-link.ca">contact@safi-link.ca</a></div>
-          <div class="contact-card"><div class="service-icon">📍</div><h3>Zone de service</h3><p>Région d’intervention</p><strong>Ottawa-Gatineau</strong></div>
-        </div>
-      </div>
-    </section>
-  </main>
+<div class="mob"><a class="btn bp" href="#estimation">Estimer mon prix</a><a class="btn bg" href="sms:+16138593343">Texto</a></div>
 
-  <footer>
-    <div class="container footer-inner">
-      <div>
-        <a class="brand" href="#accueil"><span class="brand-mark" aria-hidden="true">🚚</span><span>SAFI-LINK<small>DÉMÉNAGEMENT</small></span></a>
-        <p>© <span id="year">2026</span> SAFI-LINK Déménagement. Tous droits réservés.</p>
-      </div>
-      <div class="footer-links"><a href="#services">Services</a><a href="#apropos">Pourquoi nous</a><a href="#soumission">Soumission</a><a href="#contact">Contact</a></div>
-    </div>
-  </footer>
-
-  <div class="mobile-cta" aria-label="Actions rapides">
-    <a class="btn btn-primary" href="#soumission">Soumission</a>
-    <a class="btn btn-outline" href="tel:+16138593343">Appeler</a>
-  </div>
-
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    document.getElementById("quoteForm").addEventListener("submit", function (event) {
-      event.preventDefault();
-      const data = new FormData(event.currentTarget);
-      const get = (key) => (data.get(key) || "").toString().trim();
-      
-      const subject = "Demande de soumission - SAFI-LINK Déménagement";
-      const body = 
-        "Bonjour SAFI-LINK Déménagement,\n\nJe souhaite obtenir une soumission.\n\n" +
-        "Nom : " + get("name") + "\n" +
-        "Téléphone : " + get("phone") + "\n" +
-        "Courriel : " + get("email") + "\n" +
-        "Service : " + get("type") + "\n" +
-        "Date souhaitée : " + (get("date") || "À déterminer") + "\n" +
-        "Départ : " + get("from") + "\n" +
-        "Arrivée : " + get("to") + "\n" +
-        "Détails : " + (get("details") || "Aucun détail supplémentaire") + "\n\n" +
-        "Merci.";
-
-      document.getElementById("formStatus").textContent = "Votre application de courriel va s’ouvrir avec la demande préremplie. Vérifiez le message puis envoyez-le.";
-      window.location.href = `mailto:contact@safi-link.ca?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    });
-  </script>
+<script>
+/* ===== À MODIFIER PAR VOUS : vos tarifs / Edit your rates here ===== */
+var CFG={
+  email:"contact@safi-link.ca", tel:"16138593343",
+  endpoint:"https://formsubmit.co/ajax/contact@safi-link.ca",
+  rate:{res:160,com:180,meuble:110},
+  minHours:{res:3,com:3,meuble:1},
+  dist:[0,60,0],
+  access:[0,0.1,0.2],
+  pack:0.25, heavy:80, range:0.15
+};
+var SIZES={
+ res:[["Studio / 1½",2.5],["2½",3.5],["3½",4.5],["4½",6],["5½ et plus / maison",8]],
+ com:[["Petit bureau (1-3 postes)",3],["Bureau moyen (4-10 postes)",6],["Grand local / commerce",9]],
+ meuble:[["1 meuble",1],["2-3 meubles",1.5],["Plusieurs gros meubles",2.5]]};
+var T={"DÉMÉNAGEMENT": "MOVING", "Services": "Services", "Estimation": "Estimate", "Questions": "FAQ", "Estimer mon prix": "Get my estimate", "Votre déménagement,": "Your move,", "sans attendre un rappel.": "no waiting for a callback.", "Estimez votre prix en 1 minute, trouvez toutes les réponses en ligne et envoyez votre demande quand ça vous convient. Nous travaillons sur le terrain : nous vous répondons par texto ou courriel dès que possible.": "Get your price in 1 minute, find all the answers online and send your request whenever it suits you. We work in the field: we reply by text or email as soon as possible.", "Estimer mon déménagement →": "Estimate my move →", "Voir les questions fréquentes": "See the FAQ", "Prix estimé instantanément": "Instant price estimate", "Résidentiel et commercial": "Residential and commercial", "Ce que nous faisons": "What we do", "Tout est détaillé ici pour que vous sachiez à quoi vous attendre.": "Everything is explained here so you know what to expect.", "Résidentiel": "Residential", "Appartement, condo ou maison.": "Apartment, condo or house.", "Chargement, transport, déchargement": "Loading, transport, unloading", "Protection des meubles": "Furniture protection", "Commercial": "Commercial", "Bureaux, mobilier et équipement.": "Offices, furniture and equipment.", "Planification selon vos heures d’ouverture": "Scheduling around your business hours", "Déménagement par étapes possible": "Phased moves available", "Transport de meubles": "Furniture transport", "Un meuble ou quelques objets volumineux.": "One piece of furniture or a few bulky items.", "Achat en ligne, Kijiji, Marketplace": "Online purchases, Kijiji, Marketplace", "Ramassage et livraison": "Pickup and delivery", "Emballage": "Packing", "Protection des articles fragiles.": "Protection for fragile items.", "Option ajoutée à votre estimation": "Option added to your estimate", "Aide au chargement": "Loading help", "Vous avez déjà un camion ? Nous fournissons les bras.": "Already have a truck? We provide the muscle.", "Chargement et/ou déchargement": "Loading and/or unloading", "Longue distance": "Long distance", "Vers une autre ville.": "To another city.", "Soumission personnalisée selon le trajet": "Custom quote based on the route", "Estimation en ligne": "Online estimate", "Votre prix approximatif en 1 minute": "Your approximate price in 1 minute", "Répondez aux questions : le prix se calcule en direct. Puis envoyez votre demande en un clic.": "Answer the questions: the price updates live. Then send your request in one click.", "Type de déménagement": "Type of move", "Transport de meubles seulement": "Furniture transport only", "Taille": "Size", "Distance": "Distance", "Même ville / moins de 15 km": "Same city / under 15 km", "Ottawa ⇄ Gatineau ou 15-50 km": "Ottawa ⇄ Gatineau or 15-50 km", "Plus de 50 km (soumission sur mesure)": "Over 50 km (custom quote)", "Accès": "Access", "Rez-de-chaussée / ascenseur": "Ground floor / elevator", "Escaliers (1-2 étages)": "Stairs (1-2 floors)", "Escaliers (3 étages et plus)": "Stairs (3+ floors)", "Ajouter l’emballage et la protection": "Add packing and protection", "J’ai des objets très lourds (piano, coffre-fort, etc.)": "I have very heavy items (piano, safe, etc.)", "Date souhaitée": "Preferred date", "Nom complet *": "Full name *", "Téléphone (texto) *": "Phone (text) *", "Courriel *": "Email *", "Adresse de départ *": "Pickup address *", "Adresse d’arrivée *": "Delivery address *", "Précisions (facultatif)": "Details (optional)", "* Obligatoire. Cliquez sur « Envoyer ma demande » : elle nous parvient directement avec votre estimation.": "* Required. Click “Send my request”: it reaches us directly with your estimate.", "Estimation indicative": "Estimated price", "Prix final confirmé par écrit après validation": "Final price confirmed in writing after review", "Les taxes applicables peuvent s’ajouter": "Applicable taxes may be added", "✅ Envoyer ma demande": "✅ Send my request", "Autres façons d’envoyer :": "Other ways to send:", "✉ Par courriel": "✉ By email", "📱 Envoyer par texto": "📱 Send by text", "Comment ça marche": "How it works", "4 étapes, zéro appel obligatoire": "4 steps, no call required", "Estimez": "Estimate", "Remplissez le formulaire, le prix s’affiche.": "Fill in the form, the price appears.", "Envoyez": "Send", "Un clic, et votre demande nous arrive.": "One click and your request reaches us.", "Confirmation": "Confirmation", "Nous validons les détails et la date par écrit.": "We confirm the details and date in writing.", "Jour J": "Moving day", "L’équipe arrive et s’occupe de tout.": "The team arrives and takes care of everything.", "Questions fréquentes": "Frequently asked questions", "Toutes les réponses, sans appeler": "All the answers, no call needed", "Comment obtenir un prix ?": "How do I get a price?", "Utilisez l’estimateur ci-dessus. Vous obtenez une fourchette immédiate, puis nous confirmons le prix final par écrit.": "Use the estimator above. You get an instant range, then we confirm the final price in writing.", "Quand aurai-je une réponse ?": "When will I get a reply?", "Nous sommes souvent sur le terrain. Nous répondons par texto ou courriel dès que possible. Pour une date précise, envoyez votre demande le plus tôt possible.": "We are often out in the field. We reply by text or email as soon as possible. For a specific date, send your request as early as you can.", "Comment le prix est-il calculé ?": "How is the price calculated?", "Selon la taille du logement, la distance, l’accès (escaliers), les objets lourds et les options choisies comme l’emballage.": "Based on the size of the home, distance, access (stairs), heavy items and chosen options such as packing.", "Que faut-il préparer avant le jour J ?": "What should I prepare before moving day?", "Videz et débranchez les électroménagers, emballez les petits objets, réservez le stationnement ou l’ascenseur si nécessaire et libérez les passages.": "Empty and unplug appliances, pack small items, reserve parking or the elevator if needed and clear the pathways.", "Dois-je être présent ?": "Do I need to be there?", "Oui, une personne doit être présente au départ et à l’arrivée pour guider l’équipe et valider la fin du travail.": "Yes, someone must be present at pickup and delivery to guide the team and approve the completed work.", "Quelles zones desservez-vous ?": "Which areas do you serve?", "Ottawa-Gatineau et environs. Pour une destination plus éloignée, choisissez « Plus de 50 km » : nous préparerons une soumission sur mesure.": "Ottawa-Gatineau and surroundings. For a farther destination, choose “Over 50 km”: we will prepare a custom quote.", "Puis-je modifier ou annuler ma réservation ?": "Can I change or cancel my booking?", "Oui. Écrivez-nous par texto ou courriel le plus tôt possible pour ajuster la date ou les détails.": "Yes. Text or email us as early as possible to adjust the date or details.", "SAFI-LINK Déménagement": "SAFI-LINK Moving", "Tous droits réservés. Zone : Ottawa-Gatineau": "All rights reserved. Service area: Ottawa-Gatineau", "Texto 613-859-3343": "Text 613-859-3343", "Texto": "Text", "Studio / 1½": "Studio / 1½", "2½": "2½ (1 bedroom)", "3½": "3½ (2 bedrooms)", "4½": "4½ (3 bedrooms)", "5½ et plus / maison": "5½+ / house", "Petit bureau (1-3 postes)": "Small office (1-3 desks)", "Bureau moyen (4-10 postes)": "Medium office (4-10 desks)", "Grand local / commerce": "Large space / store", "1 meuble": "1 piece of furniture", "2-3 meubles": "2-3 pieces of furniture", "Plusieurs gros meubles": "Several large pieces", "Sur mesure": "Custom quote", "Longue distance : soumission personnalisée": "Long distance: custom quote", "Votre application de courriel s’ouvre : vérifiez puis envoyez.": "Your email app is opening: review, then send.", "Votre application de messages s’ouvre : appuyez sur envoyer.": "Your messaging app is opening: tap send.", "✅ Demande envoyée ! Nous vous répondons par texto ou courriel dès que possible.": "✅ Request sent! We will reply by text or email as soon as possible.", "L’envoi a échoué. Réessayez ou utilisez courriel ou texto.": "Sending failed. Try again or use email or text.", "Envoi en cours…": "Sending…", "Bonjour SAFI-LINK, je souhaite une soumission.": "Hello SAFI-LINK, I would like a quote.", "Nom": "Name", "Téléphone": "Phone", "Courriel": "Email", "Service": "Service", "Emballage ": "Packing ", "Objets lourds": "Heavy items", "Oui": "Yes", "Non": "No", "Date": "Date", "À déterminer": "To be determined", "Départ": "Pickup", "Arrivée": "Delivery", "Détails": "Details", "Aucun": "None", "Estimation affichée": "Estimate shown", "sur mesure": "custom quote", "Langue du client": "Client language", "Merci.": "Thank you.", "Demande de soumission": "Quote request", "Nouvelle demande de soumission": "New quote request", "Étages, objets fragiles, stationnement, horaires…": "Floors, fragile items, parking, schedule…"};
+var R={};for(var k in T)R[T[k]]=k;
+var TITLE={fr:"SAFI-LINK Déménagement | Estimation en ligne à Ottawa-Gatineau",en:"SAFI-LINK Moving | Online estimate in Ottawa-Gatineau"};
+var DESC={fr:"SAFI-LINK Déménagement : déménagement résidentiel, commercial et transport de meubles à Ottawa-Gatineau. Estimez votre prix en ligne, sans appel.",en:"SAFI-LINK Moving: residential and commercial moving and furniture transport in Ottawa-Gatineau. Get your price online, no call needed."};
+var $=function(i){return document.getElementById(i)},val=0,lo=0,hi=0,custom=false;
+var L="";try{L=localStorage.getItem("lang")||""}catch(e){}
+if(L!=="fr"&&L!=="en")L=((navigator.language||"fr").toLowerCase().indexOf("en")===0)?"en":"fr";
+function t(s){return L==="en"&&T[s]?T[s]:s}
+function tr(s){var m=s.match(/^(\s*)([\s\S]*?)(\s*)$/),c=m[2];if(!c)return s;var fr=R[c]||c;return m[1]+(L==="en"?(T[fr]||fr):fr)+m[3]}
+function apply(){
+ var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null),n,a=[];
+ while(n=w.nextNode()){if(n.parentNode.nodeName!=="SCRIPT")a.push(n)}
+ a.forEach(function(x){var v=tr(x.nodeValue);if(v!==x.nodeValue)x.nodeValue=v});
+ var ta=$("det");ta.placeholder=t("Étages, objets fragiles, stationnement, horaires…");
+ document.documentElement.lang=L;document.title=TITLE[L];
+ document.querySelector('meta[name="description"]').setAttribute("content",DESC[L]);
+ $("lg").textContent=L==="fr"?"EN":"FR";$("lg").setAttribute("aria-label",L==="fr"?"Switch to English":"Passer au français");
+ $("y").textContent=new Date().getFullYear();
+ calc();
+}
+$("lg").onclick=function(){L=L==="fr"?"en":"fr";try{localStorage.setItem("lang",L)}catch(e){}apply()};
+$("date").min=new Date().toISOString().slice(0,10);
+function fillSizes(){var ty=$("type").value;$("size").innerHTML=SIZES[ty].map(function(s,i){return '<option value="'+i+'">'+t(s[0])+'</option>'}).join("");calc()}
+function calc(){
+ var ty=$("type").value,h=Math.max(CFG.minHours[ty],SIZES[ty][+$("size").value][1]),d=+$("dist").value,a=+$("acc").value;
+ custom=d===2;
+ var base=h*CFG.rate[ty]*(1+CFG.access[a])+CFG.dist[d];
+ if($("pack").checked)base*=1+CFG.pack;
+ if($("heavy").checked)base+=CFG.heavy;
+ val=base;lo=Math.round(base*(1-CFG.range)/10)*10;hi=Math.round(base*(1+CFG.range)/10)*10;
+ $("price").textContent=custom?t("Sur mesure"):(L==="en"?"$"+lo+" – $"+hi:lo+" $ – "+hi+" $");
+ $("hrs").textContent=custom?t("Longue distance : soumission personnalisée"):(L==="en"?"Estimated duration: about "+h+" h of work":"Durée estimée : environ "+h+" h de travail");
+}
+["type","size","dist","acc","pack","heavy"].forEach(function(i){$(i).addEventListener("change",function(){i==="type"?fillSizes():calc()})});
+function msg(){
+ var g=function(i){return $(i).value.trim()},sel=function(i){var e=$(i);return e.options[e.selectedIndex].text},yn=function(b){return t(b?"Oui":"Non")};
+ return t("Bonjour SAFI-LINK, je souhaite une soumission.")+"\n\n"+
+ t("Nom")+" : "+g("name")+"\n"+t("Téléphone")+" : "+g("phone")+"\n"+t("Courriel")+" : "+g("email")+
+ "\n"+t("Service")+" : "+sel("type")+"\n"+t("Taille")+" : "+sel("size")+"\n"+t("Distance")+" : "+sel("dist")+"\n"+t("Accès")+" : "+sel("acc")+
+ "\n"+t("Emballage")+" : "+yn($("pack").checked)+"\n"+t("Objets lourds")+" : "+yn($("heavy").checked)+
+ "\n"+t("Date")+" : "+(g("date")||t("À déterminer"))+"\n"+t("Départ")+" : "+g("from")+"\n"+t("Arrivée")+" : "+g("to")+
+ "\n"+t("Détails")+" : "+(g("det")||t("Aucun"))+"\n"+t("Estimation affichée")+" : "+(custom?t("sur mesure"):$("price").textContent)+
+ "\n"+t("Langue du client")+" : "+(L==="en"?"English":"Français")+"\n\n"+t("Merci.");
+}
+function subj(){return "["+L.toUpperCase()+"] "+t("Nouvelle demande de soumission")+" - "+$("name").value.trim()}
+function valid(){var f=$("f");if(!f.checkValidity()){f.reportValidity();return false}return true}
+function done(x){$("ok").textContent=t(x)}
+$("bf").onclick=function(){
+ if(!valid())return;
+ if(!CFG.endpoint){$("bm").click();return}
+ var b=$("bf");b.disabled=true;b.textContent=t("Envoi en cours…");
+ fetch(CFG.endpoint,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},
+  body:JSON.stringify({_subject:subj(),name:$("name").value.trim(),email:$("email").value.trim(),phone:$("phone").value.trim(),message:msg()})})
+ .then(function(r){if(!r.ok)throw 0;done("✅ Demande envoyée ! Nous vous répondons par texto ou courriel dès que possible.");$("f").reset();fillSizes()})
+ .catch(function(){done("L’envoi a échoué. Réessayez ou utilisez courriel ou texto.")})
+ .then(function(){b.disabled=false;b.textContent=t("✅ Envoyer ma demande")});
+};
+$("bm").onclick=function(){if(!valid())return;location.href="mailto:"+CFG.email+"?subject="+encodeURIComponent(subj())+"&body="+encodeURIComponent(msg());done("Votre application de courriel s’ouvre : vérifiez puis envoyez.")};
+$("bs").onclick=function(e){e.preventDefault();if(!valid())return;location.href="sms:+"+CFG.tel+"?&body="+encodeURIComponent(msg());done("Votre application de messages s’ouvre : appuyez sur envoyer.")};
+fillSizes();apply();
+</script>
 </body>
 </html>
-'''
-
-path = Path("/mnt/data/safi-link-demenagement.html")
-path.write_text(html, encoding="utf-8")
-print(f"Fichier corrigé créé : {path} ({path.stat().st_size} octets)")
